@@ -1,0 +1,21 @@
+package {{.PackageName}}
+
+func UnicodeToShortname(unicode string) (string, bool) {
+    s, present := unicodeToShortname[unicode]
+    return s, present
+}
+
+func ShortnameToUnicode(shortname string) (string, bool) {
+    u, present := shortnameToUnicode[shortname]
+    return u, present
+}
+
+var unicodeToShortname = map[string]string{
+    {{range .Emoji}}{{ .Unicode | quote }}: "{{ .Shortname }}",
+    {{end}}
+}
+
+var shortnameToUnicode = map[string]string{
+    {{range .Emoji}}{{$unicode := .Unicode | quote }}{{range .Shortnames}}"{{.}}": {{$unicode}},
+    {{end}}{{end}}
+}
