@@ -11,36 +11,49 @@ import (
 
 // Emoji represents an emoji.
 type Emoji struct {
-	base      []rune
-	modifiers []rune
+	unicode string
 }
 
 // IamcalShortname returns a string shortname used to refer to the emoji in many
 // chat providers, including slack.
 func (e Emoji) IamcalShortname() string {
-	s, _ := iamcal.UnicodeToShortname(e.FullyQualifiedUnicode())
+	s, _ := iamcal.UnicodeToShortname(e.NoSkinTones())
 	return s
 }
 
 // JoypixelsShortname returns a string shortname used to refer to the emoji in
 // chat providers that use JoyPixels (formerly EmojiOne), including discord.
 func (e Emoji) JoypixelsShortname() string {
-	s, _ := joypixels.UnicodeToShortname(e.FullyQualifiedUnicode())
+	s, _ := joypixels.UnicodeToShortname(e.FullEmoji())
 	return s
 }
 
-// FullyQualifiedUnicode returns the actual unicode rune that is the emoji.
-func (e Emoji) FullyQualifiedUnicode() string {
-	runes := append(e.base, e.modifiers...)
-	var s []string
-	for _, r := range runes {
-		s = append(s, string(r))
+// FullEmoji returns the actual unicode rune that is the emoji.
+func (e Emoji) FullEmoji() string {
+	return e.unicode
+}
+
+func (e Emoji) NoSkinTones() string {
+	var sb strings.Builder
+	for _, r := range e.unicode {
+		if !unicode.Is(SkinToneModifiers, r) {
+			sb.WriteRune(r)
+		}
 	}
-	return strings.Join(s, string(Connector))
+	return sb.String()
+}
+
+func (e Emoji) SkinTone() rune {
+	for _, r := range e.unicode {
+		if unicode.Is(SkinToneModifiers, r) {
+			return r
+		}
+	}
+	return rune(0)
 }
 
 func From(s string) (Emoji, error) {
-	_, present := iamcal.UnicodeToShortname(s)
+	_, present := joypixels.UnicodeToShortname(s)
 	if present {
 		return FromUnicode(s), nil
 	}
@@ -57,20 +70,21 @@ func From(s string) (Emoji, error) {
 }
 
 func FromUnicode(u string) Emoji {
-	var base []rune
-	var modifiers []rune
-	for _, r := range []rune(u) {
-		if r == Connector {
-			continue
-		} else if unicode.Is(unicode.Sk, r) {
-			modifiers = append(modifiers, r)
-		} else {
-			base = append(base, r)
-		}
-	}
-
-	return Emoji{
-		base:      base,
-		modifiers: modifiers,
-	}
+	//var base []rune
+	//var modifiers []rune
+	//for _, r := range []rune(u) {
+	//	if r == ZeroWidthJoiner {
+	//		continue
+	//	} else if unicode.Is(unicode.Sk, r) {
+	//		modifiers = append(modifiers, r)
+	//	} else {
+	//		base = append(base, r)
+	//	}
+	//}
+	//
+	//return Emoji{
+	//	base:      base,
+	//	modifiers: modifiers,
+	//}
+	return Emoji{unicode: u}
 }

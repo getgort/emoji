@@ -10,27 +10,27 @@ func TestEmojiBasic(t *testing.T) {
 	e1, err := From("thumbsup")
 	assert.NoError(t, err)
 	assert.Equal(t, "+1", e1.IamcalShortname())
-	assert.Equal(t, "👍", e1.FullyQualifiedUnicode())
+	assert.Equal(t, "👍", e1.FullEmoji())
 
 	e2, err := From("+1")
 	assert.NoError(t, err)
 	assert.Equal(t, "+1", e2.IamcalShortname())
-	assert.Equal(t, "👍", e2.FullyQualifiedUnicode())
+	assert.Equal(t, "👍", e2.FullEmoji())
 
 	e3, err := From("👍")
 	assert.NoError(t, err)
-	assert.Equal(t, "👍", e3.FullyQualifiedUnicode())
+	assert.Equal(t, "👍", e3.FullEmoji())
 	assert.Equal(t, "+1", e3.IamcalShortname())
 }
 
 func TestEmojiMulti(t *testing.T) {
 	england, err := From("flag-england")
 	assert.NoError(t, err)
-	assert.Equal(t, "🏴󠁧󠁢󠁥󠁮󠁧󠁿", england.FullyQualifiedUnicode())
+	assert.Equal(t, "🏴󠁧󠁢󠁥󠁮󠁧󠁿", england.FullEmoji())
 
 	womanWomanBoyBoy, err := From("woman-woman-boy-boy")
 	assert.NoError(t, err)
-	assert.Equal(t, "👩‍👩‍👦‍👦", womanWomanBoyBoy.FullyQualifiedUnicode())
+	assert.Equal(t, "👩‍👩‍👦‍👦", womanWomanBoyBoy.FullEmoji())
 }
 
 func TestPlatformSpecificShortnames(t *testing.T) {
@@ -38,4 +38,8 @@ func TestPlatformSpecificShortnames(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "woman-woman-boy-boy", wwbb.IamcalShortname())
 	assert.Equal(t, "family_wwbb", wwbb.JoypixelsShortname())
+}
+
+func TestEmojiSkinTone(t *testing.T) {
+
 }

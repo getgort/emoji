@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/getgort/emoji/v2/emoji"
 	"go/format"
 	"net/http"
 	"os"
@@ -112,9 +111,9 @@ func Gen(data []internalEmoji, packageName, out string) error {
 		return err
 	}
 
-	for i := range data {
-		data[i].Unicode = emoji.FromUnicode(data[i].Unicode).FullyQualifiedUnicode()
-	}
+	//for i := range data {
+	//	data[i].Unicode = emoji.FromUnicode(data[i].Unicode).FullEmoji()
+	//}
 
 	b := bytes.NewBuffer([]byte{})
 
